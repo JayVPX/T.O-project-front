@@ -21,6 +21,7 @@ export const theme: DefaultTheme = {
     xxl: "64px",
   },
   radius: {
+    xs: "4px",
     sm: "8px",
     md: "12px",
     lg: "20px",
