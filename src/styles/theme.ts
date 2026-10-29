@@ -11,6 +11,7 @@ export const theme: DefaultTheme = {
     text: "#29332F",
     textSecondary: "#68736E",
     border: "#E5E9E6",
+    error: "#E11D48",
   },
   spacing: {
     xs: "4px",

@@ -10,10 +10,12 @@ import {
   NavLinkItem,
   LoginButton,
 } from "./styled";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -22,6 +24,9 @@ export default function Navbar() {
   }, []);
 
   const closeMenu = () => setMenuOpen(false);
+  const sendToLogin = () => {
+    navigate("/login");
+  };
 
   return (
     <Nav scrolled={scrolled}>
@@ -61,7 +66,7 @@ export default function Navbar() {
             </a>
           </NavLinkItem>
           <NavLinkItem>
-            <LoginButton onClick={closeMenu}>Entrar</LoginButton>
+            <LoginButton onClick={sendToLogin}>Entrar</LoginButton>
           </NavLinkItem>
         </NavLinks>
       </NavContainer>
