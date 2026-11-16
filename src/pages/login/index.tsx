@@ -51,12 +51,12 @@ export default function Login() {
 
   const onRegister = (data: registerType) => {
     console.log("Dados do cadastro:", data);
-    navigate("/user");
+    navigate("/therapist");
   };
 
   const onLogin = (data: loginType) => {
     console.log("Dados do login:", data);
-    navigate("/user");
+    navigate("/therapist");
   };
 
   return (

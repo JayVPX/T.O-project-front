@@ -1,4 +1,13 @@
-import { CalendarClock, History, LogOut, Menu, Users, X } from "lucide-react";
+import {
+  CalendarClock,
+  History,
+  // House,
+  LogOut,
+  Menu,
+  UserRoundCog,
+  Users,
+  X,
+} from "lucide-react";
 import {
   Overlay,
   SidebarHeader,
@@ -15,6 +24,7 @@ import {
   Content,
   Layout,
   Sidebar,
+  LogoLink,
 } from "./styled";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
@@ -23,6 +33,7 @@ export default function UserDashboard() {
   const location = useLocation();
   const navigate = useNavigate();
   const titles: Record<string, string> = {
+    "/user/me": "Meus Dados",
     "/user/patients": "Pacientes",
     "/user/schedule": "Agendar Consulta",
     "/user/history": "Histórico de Consultas",
@@ -42,14 +53,27 @@ export default function UserDashboard() {
       <Overlay show={sidebarOpen} onClick={() => setSidebarOpen(false)} />
       <Sidebar open={sidebarOpen}>
         <SidebarHeader>
-          <LogoImg
+          <LogoLink
+            aria-label="Voltar para a home"
+            title="Voltar para a home"
             onClick={sendToHome}
-            src="/src/assets/images/logo.png"
-            alt="Beatriz Praxedes — TO"
-          />
+          >
+            <LogoImg
+              src="/src/assets/images/logo1.png"
+              alt="Beatriz Praxedes — TO"
+            />
+          </LogoLink>
         </SidebarHeader>
 
         <Nav>
+          <NavItem
+            to="/user/me"
+            className={({ isActive }) => (isActive ? "active" : "")}
+          >
+            <UserRoundCog size={20} />
+            Meus Dados
+          </NavItem>
+
           <NavItem
             to="/user/patients"
             className={({ isActive }) => (isActive ? "active" : "")}

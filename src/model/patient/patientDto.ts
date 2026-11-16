@@ -1,13 +1,12 @@
+import type { ResponsibleDTO } from "../responsible/responsibleDto";
+
 export interface PatientDTO {
   id: string;
   name: string;
   relationship: string;
   birth_date: string;
   notes?: string;
-  responsible: {
-    id: string;
-    name: string;
-  };
+  responsible: ResponsibleDTO;
   therapist: {
     id: string;
     name: string;

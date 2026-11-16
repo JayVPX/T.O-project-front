@@ -32,7 +32,7 @@ export default function Footer() {
           <LogoColumn>
             <Logo>
               <LogoImage
-                src="/src/assets/images/logo.png"
+                src="/src/assets/images/logo1.png"
                 alt="Beatriz Praxedes — Terapia Ocupacional"
               />
             </Logo>

@@ -33,7 +33,7 @@ export default function Navbar() {
       <NavContainer>
         <Logo href="#home">
           <LogoImage
-            src="/src/assets/images/logo.png"
+            src="/src/assets/images/logoNoBg.png"
             alt="Beatriz Praxedes — Terapia Ocupacional"
           />
         </Logo>

@@ -16,7 +16,7 @@ const Nav = styled.nav<{ scrolled: boolean }>`
 const NavContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
-  padding: ${({ theme }) => theme.spacing.lg} ${({ theme }) => theme.spacing.xl};
+  padding: ${({ theme }) => theme.spacing.md} ${({ theme }) => theme.spacing.xl};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -34,12 +34,13 @@ const Logo = styled.a`
   font-size: 1.3rem;
   font-weight: 700;
   color: ${({ theme }) => theme.colors.primaryDark};
+  /* background-color: red; */
 `;
 
 const LogoImage = styled.img`
   width: 188px;
-  height: 84px;
-  object-fit: cover;
+  height: 90px;
+  /* object-fit: fill; */
   object-position: center 30%;
   transition: transform 0.3s ease;
   border-radius: ${({ theme }) => theme.radius.sm};

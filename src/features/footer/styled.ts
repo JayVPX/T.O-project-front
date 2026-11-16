@@ -53,8 +53,8 @@ const Logo = styled.div`
 
 const LogoImage = styled.img`
   width: 220px;
-  height: 100px;
-  object-fit: cover;
+  height: 110px;
+  object-fit: fill;
   object-position: center 30%;
   margin-bottom: ${({ theme }) => theme.spacing.sm};
   border-radius: ${({ theme }) => theme.radius.lg};

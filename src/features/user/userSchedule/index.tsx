@@ -12,12 +12,11 @@ import {
   ModalityOptions,
   ModalityCard,
   HiddenRadio,
-  TextArea,
   SubmitBtn,
   Form,
   LoadingState,
 } from "./styled";
-import type { PatientDTO } from "../../model/patient/patientDto";
+import type { PatientDTO } from "../../../model/patient/patientDto";
 import { CircularProgress, FormHelperText } from "@mui/material";
 import { useTheme } from "styled-components";
 import { Controller, useForm } from "react-hook-form";
@@ -215,20 +214,6 @@ export default function UserSchedule() {
                 <span>Online</span>
               </ModalityCard>
             </ModalityOptions>
-          </FieldGroup>
-
-          <FieldGroup>
-            <Label>Observações</Label>
-            <Controller
-              name="notes"
-              control={control}
-              render={({ field }) => (
-                <TextArea
-                  {...field}
-                  placeholder="Algo importante para a consulta?"
-                />
-              )}
-            />
           </FieldGroup>
 
           <SubmitBtn type="submit" disabled={saving}>

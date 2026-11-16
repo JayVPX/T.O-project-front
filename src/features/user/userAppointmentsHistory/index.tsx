@@ -9,10 +9,10 @@ import {
   LoadingState,
 } from "./styled";
 import { useEffect, useState } from "react";
-import { type AppointmentDTO } from "../../model/appointment/appointmentDto";
+import { type AppointmentDTO } from "../../../model/appointment/appointmentDto";
 import { CircularProgress } from "@mui/material";
 import { useTheme } from "styled-components";
-import AppointmentCard from "../../components/appointmentCard";
+import AppointmentCard from "../../../components/appointmentCard";
 
 export default function UserAppointmentsHistory() {
   const theme = useTheme();

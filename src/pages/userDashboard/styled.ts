@@ -30,16 +30,12 @@ const Sidebar = styled.aside<{ open: boolean }>`
 `;
 
 const SidebarHeader = styled.div`
-  padding: ${({ theme }) => theme.spacing.lg};
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: ${({ theme }) => theme.spacing.md};
   border-bottom: 1px solid ${({ theme }) => theme.colors.border};
-`;
-
-const LogoImg = styled.img`
-  width: 180px;
-  height: 80px;
-  object-fit: cover;
-  object-position: center 30%;
-  cursor: pointer;
+  position: relative;
 `;
 
 const Nav = styled.nav`
@@ -177,6 +173,58 @@ const Overlay = styled.div<{ show: boolean }>`
     display: block;
   }
 `;
+
+const HomeLink = styled.div`
+  position: absolute;
+  top: 12px;
+  left: 8px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 20px;
+  /* border: 1px solid ${({ theme }) => theme.colors.border}; */
+  background: ${({ theme }) => theme.colors.surface};
+  color: ${({ theme }) => theme.colors.primaryDark};
+  transition: all 0.2s ease;
+  z-index: 2;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primary};
+    border-color: ${({ theme }) => theme.colors.primary};
+    color: ${({ theme }) => theme.colors.surface};
+    transform: translateY(-1px);
+  }
+
+  &:focus-visible {
+    outline: 3px solid rgba(107, 144, 128, 0.28);
+    outline-offset: 2px;
+  }
+`;
+
+const LogoLink = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  border-radius: ${({ theme }) => theme.radius.sm};
+  cursor: pointer;
+`;
+
+const LogoImg = styled.img`
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  aspect-ratio: 8 / 4;
+  height: auto;
+  object-fit: cover;
+  object-position: center 30%;
+`;
+
 export {
   Content,
   Layout,
@@ -193,4 +241,6 @@ export {
   Topbar,
   TopbarTitle,
   UserEmail,
+  HomeLink,
+  LogoLink,
 };

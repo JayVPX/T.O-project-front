@@ -24,11 +24,11 @@ import { useEffect, useState } from "react";
 import {
   RelationshipType,
   type PatientDTO,
-} from "../../model/patient/patientDto";
+} from "../../../model/patient/patientDto";
 import { useTheme } from "styled-components";
 import { Controller, useForm } from "react-hook-form";
 import { createPatientSchema, type createPatientType } from "./schema";
-import PatientCard from "../../components/patientCard";
+import PatientCard from "../../../components/patientCard";
 
 export default function UserPatientsScreen() {
   const [patients, setPatients] = useState<PatientDTO[]>([]);
