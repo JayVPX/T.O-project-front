@@ -15,7 +15,7 @@ export interface PatientDTO {
   created_at: string;
 }
 
-export interface createPatientDTO {
+export interface CreatePatientDTO {
   name: string;
   relationship: number;
   responsible_id: string;

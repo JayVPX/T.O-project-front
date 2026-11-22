@@ -1,12 +1,12 @@
 import type {
-  createPatientDTO,
+  CreatePatientDTO,
   PatientDTO,
 } from "../../../model/patient/patientDto";
 import { privateApi } from "../../http/httpClient";
 
 export const patientService = {
   //Criar paciente
-  async createPatient(payload: createPatientDTO): Promise<PatientDTO> {
+  async createPatient(payload: CreatePatientDTO): Promise<PatientDTO> {
     const { data } = await privateApi.post<PatientDTO>(`patient`, payload);
 
     return data;

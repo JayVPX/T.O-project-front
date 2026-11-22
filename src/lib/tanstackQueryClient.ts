@@ -9,4 +9,9 @@ export const queryClient = new QueryClient({
   },
 });
 
-export const queryKeys = {};
+export const queryKeys = {
+  allPatients: "patients",
+  getOnePatient: "onePatient",
+  therapistPatients: "therapistPatients",
+  userPatients: "userPatients",
+};
