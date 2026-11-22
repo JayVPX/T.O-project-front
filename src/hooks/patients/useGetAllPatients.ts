@@ -6,7 +6,8 @@ export function useGetAllPatients() {
   return useQuery({
     queryKey: [queryKeys.allPatients],
     queryFn: async () => {
-      patientService.getAllPatients();
+      const data = await patientService.getAllPatients();
+      return data;
     },
   });
 }

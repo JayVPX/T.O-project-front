@@ -6,7 +6,8 @@ import { queryClient, queryKeys } from "../../lib/tanstackQueryClient";
 export function useCreatePatient() {
   return useMutation({
     mutationFn: async (payload: CreatePatientDTO) => {
-      await patientService.createPatient(payload);
+      const data = await patientService.createPatient(payload);
+      return data;
     },
 
     onSuccess: () => {

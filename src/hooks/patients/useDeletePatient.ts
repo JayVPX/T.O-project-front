@@ -5,7 +5,8 @@ import { queryClient, queryKeys } from "../../lib/tanstackQueryClient";
 export function useDeletePatient() {
   return useMutation({
     mutationFn: async (patientId: string) => {
-      await patientService.deletePatient(patientId);
+      const data = await patientService.deletePatient(patientId);
+      return data;
     },
 
     onSuccess: () => {

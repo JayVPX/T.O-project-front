@@ -6,7 +6,9 @@ export function useGetOnePatient(id: string) {
   return useQuery({
     queryKey: [queryKeys.getOnePatient, id],
     queryFn: async () => {
-      await patientService.getOnePatient(id);
+      const data = await patientService.getOnePatient(id);
+
+      return data;
     },
     enabled: Boolean(id),
   });
