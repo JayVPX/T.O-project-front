@@ -3,4 +3,5 @@ export interface ResponsibleDTO {
   name: string;
   phone: string;
   email: string;
+  address?: string;
 }

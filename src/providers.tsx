@@ -4,6 +4,7 @@ import { theme } from "./styles/theme";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "./lib/tanstackQueryClient";
 import { GlobalStyle } from "./styles/globalStyles";
+import { AuthProvider } from "./providers/auth/authProvider";
 
 export interface ProviderProps {
   children: ReactNode;
@@ -12,10 +13,12 @@ export interface ProviderProps {
 export default function Providers({ children }: ProviderProps) {
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider theme={theme}>
-        <GlobalStyle />
-        {children}
-      </ThemeProvider>
+      <AuthProvider>
+        <ThemeProvider theme={theme}>
+          <GlobalStyle />
+          {children}
+        </ThemeProvider>
+      </AuthProvider>
     </QueryClientProvider>
   );
 }

@@ -51,7 +51,7 @@ function ParagraphField({ label, value }: { label: string; value: string }) {
 export default function SchoolVisitDocument({ body, patient }: Props) {
   const [logoBase64, setLogoBase64] = useState("");
   const emissionDate = new Date();
-
+  const therapistName = "Beatriz Praxedes";
   const day = emissionDate.getDate();
   const month = emissionDate.getMonth();
   const year = emissionDate.getFullYear();
@@ -104,10 +104,7 @@ export default function SchoolVisitDocument({ body, patient }: Props) {
             value={`${general.startTime} às ${general.endTime}`}
           />
 
-          <InformationItem
-            label="Terapeuta relatora"
-            value={patient.therapist.name}
-          />
+          <InformationItem label="Terapeuta relatora" value={therapistName} />
         </View>
 
         {/* Observação terapêutica */}

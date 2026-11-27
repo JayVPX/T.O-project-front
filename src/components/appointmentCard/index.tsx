@@ -39,12 +39,17 @@ export default function AppointmentCard({
     "NOV",
     "DEZ",
   ];
-  const date = new Date(a.scheduleAt);
+  const startDate = new Date(a.startAt);
+  const endDate = new Date(a.endAt);
 
-  const day = date.getDate();
-  const month = months[date.getMonth()];
+  const day = startDate.getDate();
+  const month = months[startDate.getMonth()];
 
-  const time = date.toLocaleTimeString("pt-BR", {
+  const startTime = startDate.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const endTime = endDate.toLocaleTimeString("pt-BR", {
     hour: "2-digit",
     minute: "2-digit",
   });
@@ -64,7 +69,7 @@ export default function AppointmentCard({
         <InfoRow>
           <InfoItem>
             <Clock size={14} />
-            {time}
+            {startTime} - {endTime}
           </InfoItem>
 
           <InfoItem>

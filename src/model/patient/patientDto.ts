@@ -3,14 +3,10 @@ import type { ResponsibleDTO } from "../responsible/responsibleDto";
 export interface PatientDTO {
   id: string;
   name: string;
-  relationship: string;
+  relationship: number;
   birth_date: string;
   notes?: string;
   responsible: ResponsibleDTO;
-  therapist: {
-    id: string;
-    name: string;
-  };
 
   created_at: string;
 }
@@ -18,7 +14,7 @@ export interface PatientDTO {
 export interface CreatePatientDTO {
   name: string;
   relationship: number;
-  responsible_id: string;
+  responsibleId: string;
   birth_date: string;
   notes?: string;
 }
@@ -34,4 +30,17 @@ export const RelationshipType = {
   GrandMother: 8,
   LegalGuardian: 9,
   Other: 10,
+};
+
+export const RelationshipLabel: Record<number, string> = {
+  [RelationshipType.Father]: "Pai",
+  [RelationshipType.Mother]: "Mãe",
+  [RelationshipType.Son]: "Filho",
+  [RelationshipType.Daughter]: "Filha",
+  [RelationshipType.Brother]: "Irmão",
+  [RelationshipType.Sister]: "Irmã",
+  [RelationshipType.GrandFather]: "Avô",
+  [RelationshipType.GrandMother]: "Avó",
+  [RelationshipType.LegalGuardian]: "Guardião legal",
+  [RelationshipType.Other]: "Outro",
 };

@@ -10,7 +10,7 @@ export const appointmentService = {
     payload: CreateAppointmentDTO,
   ): Promise<AppointmentDTO> {
     const { data } = await privateApi.post<AppointmentDTO>(
-      `appointments`,
+      `appointments/create`,
       payload,
     );
 
@@ -18,7 +18,7 @@ export const appointmentService = {
   },
 
   //   Pegar todas as consultas
-  async getAllAppointment(): Promise<AppointmentDTO[]> {
+  async getAllAppointments(): Promise<AppointmentDTO[]> {
     const { data } = await privateApi.get<AppointmentDTO[]>(`appointments`);
 
     return data;
@@ -34,16 +34,16 @@ export const appointmentService = {
   },
 
   //   Consultas de todos os pacientes registrados em um usuário
-  async getUserPatientAppointments(userId: string): Promise<AppointmentDTO[]> {
+  async getResponsibleAppointments(userId: string): Promise<AppointmentDTO[]> {
     const { data } = await privateApi.get<AppointmentDTO[]>(
-      `appointments/patients/${userId}`,
+      `appointments/user/${userId}`,
     );
 
     return data;
   },
 
   //   Consultas registrados a um terapeuta
-  async getTherapistAppointment(
+  async getTherapistAppointments(
     therapistId: string,
   ): Promise<AppointmentDTO[]> {
     const { data } = await privateApi.get<AppointmentDTO[]>(

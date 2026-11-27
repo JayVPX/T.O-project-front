@@ -1,13 +1,26 @@
-import type { CreateUserDto, UserDto } from "../../../model/user/userDto";
-import { privateApi } from "../../http/httpClient";
+import type {
+  LoginRequestDTO,
+  LoginResponseDTO,
+} from "../../../model/auth/authDto";
+import type {
+  CreateUserModelDto,
+  UserModelDto,
+} from "../../../model/user/userDto";
+import { publicApi } from "../../http/httpClient";
 
 export const authServices = {
-  async login(): Promise<UserDto> {
-    const { data } = await privateApi.post("auth/login");
+  async login(payload: LoginRequestDTO): Promise<LoginResponseDTO> {
+    const { data } = await publicApi.post<LoginResponseDTO>(
+      "auth/login",
+      payload,
+    );
     return data;
   },
-  async register(payload: CreateUserDto): Promise<UserDto> {
-    const { data } = await privateApi.post("auth/register", payload);
+  async register(payload: CreateUserModelDto): Promise<UserModelDto> {
+    const { data } = await publicApi.post<UserModelDto>(
+      "auth/register",
+      payload,
+    );
     return data;
   },
 };

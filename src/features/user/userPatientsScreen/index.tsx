@@ -20,23 +20,22 @@ import {
   TextArea,
 } from "./styled";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
-import {
-  RelationshipType,
-  type PatientDTO,
-} from "../../../model/patient/patientDto";
+import { useState } from "react";
+import { RelationshipType } from "../../../model/patient/patientDto";
 import { useTheme } from "styled-components";
 import { Controller, useForm } from "react-hook-form";
 import { createPatientSchema, type createPatientType } from "./schema";
 import PatientCard from "../../../components/patientCard";
+import { useGetUserPatients } from "../../../hooks/patients/useGetUserPatients";
+import { useCreatePatient } from "../../../hooks/patients/useCreatePatient";
+import { useDeletePatient } from "../../../hooks/patients/useDeletePatient";
+import { useAuth } from "../../../providers/auth/useAuth";
 
 export default function UserPatientsScreen() {
-  const [patients, setPatients] = useState<PatientDTO[]>([]);
+  const { user } = useAuth();
+  const id = user?.id;
   const theme = useTheme();
-  const [loading, setLoading] = useState<boolean>(true);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
-
-  const [saving, setSaving] = useState<boolean>(false);
 
   const { control, handleSubmit, reset } = useForm<createPatientType>({
     resolver: zodResolver(createPatientSchema),
@@ -61,47 +60,37 @@ export default function UserPatientsScreen() {
     { value: RelationshipType.Other, label: "Outro" },
   ];
 
-  useEffect(() => {
-    const fetchPatients = async () => {
-      setTimeout(() => {
-        setPatients([
-          {
-            id: "1",
-            name: "Leonardo Costa",
-            birth_date: "03/25/2019",
-            relationship: "Filho",
-            responsible: { id: "112211", name: "Guilherme Costa" },
-            therapist: { id: "44584", name: "Betriz Praxedes" },
-            created_at: "26/10/2026",
-          },
-          {
-            id: "2",
-            name: "Eduardo Costa",
-            birth_date: "09/02/2022",
-            relationship: "Filho",
-            responsible: { id: "112211", name: "Guilherme Costa" },
-            therapist: { id: "44584", name: "Betriz Praxedes" },
-            created_at: "26/10/2026",
-          },
-        ]);
+  // Hooks
+  const { mutate, isPending } = useCreatePatient();
+  const { mutate: deleteMutate } = useDeletePatient();
+  const { data: patients, isLoading } = useGetUserPatients(id ?? "");
 
-        setLoading(false);
-      }, 2000);
-    };
-
-    fetchPatients();
-  }, []);
-
+  // Submit
   const onSubmit = async (data: createPatientType) => {
-    console.log("Chamou");
-    console.log(data);
-    setSaving(true);
-
-    setTimeout(() => {
-      setSaving(false);
-      reset({ birth_date: "", name: "", notes: "", relationship: undefined });
-      setModalOpen(false);
-    }, 2000);
+    try {
+      await mutate(
+        {
+          birth_date: data.birth_date,
+          name: data.name,
+          relationship: data.relationship,
+          responsibleId: id ?? "",
+          notes: data.notes,
+        },
+        {
+          onSuccess: () => {
+            setModalOpen(false);
+            reset({
+              birth_date: "",
+              name: "",
+              notes: "",
+              relationship: undefined,
+            });
+          },
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const closeModal = () => {
@@ -109,8 +98,8 @@ export default function UserPatientsScreen() {
     reset({ birth_date: "", name: "", notes: "", relationship: undefined });
   };
 
-  const handleDelete = (id: string) => {
-    console.log("Deletamo: ", id);
+  const handleDelete = async (id: string) => {
+    await deleteMutate(id);
   };
 
   return (
@@ -126,7 +115,7 @@ export default function UserPatientsScreen() {
         </AddButton>
       </Header>
 
-      {loading ? (
+      {isLoading ? (
         <LoadingState>
           <CircularProgress
             size={48}
@@ -143,7 +132,7 @@ export default function UserPatientsScreen() {
             Carregando pacientes...
           </p>
         </LoadingState>
-      ) : patients.length === 0 ? (
+      ) : patients?.length === 0 ? (
         <EmptyState>
           <Users size={56} />
           <h3>Nenhum paciente cadastrado</h3>
@@ -151,7 +140,7 @@ export default function UserPatientsScreen() {
         </EmptyState>
       ) : (
         <Grid>
-          {patients.map((p) => (
+          {patients?.map((p) => (
             <PatientCard patient={p} handleDelete={handleDelete} key={p.id} />
           ))}
         </Grid>
@@ -269,8 +258,8 @@ export default function UserPatientsScreen() {
                 />
               </div>
 
-              <SaveBtn type="submit" disabled={saving}>
-                {saving ? (
+              <SaveBtn type="submit" disabled={isPending}>
+                {isPending ? (
                   <CircularProgress
                     sx={{ color: theme.colors.accent }}
                     size={20}

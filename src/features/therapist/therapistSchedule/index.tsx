@@ -1,5 +1,5 @@
 import { MapPin, Video, CalendarClock } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Wrap,
@@ -17,81 +17,69 @@ import {
   Form,
   LoadingState,
 } from "./styled";
-import type { PatientDTO } from "../../../model/patient/patientDto";
+
 import { CircularProgress, FormHelperText } from "@mui/material";
 import { useTheme } from "styled-components";
 import { Controller, useForm } from "react-hook-form";
 import { createAppointmentSchema, type createAppointmentType } from "./schema";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useGetTherapistAvailabilityDate } from "../../../hooks/availability/useGetTherapistAvailabilityDate";
+import { useCreateAppointment } from "../../../hooks/appointments/useCreateAppointment";
+import { useGetAllPatients } from "../../../hooks/patients/useGetAllPatients";
 
 export default function TherapistSchedule() {
   const theme = useTheme();
-  const [patients, setPatients] = useState<PatientDTO[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [saving, setSaving] = useState<boolean>(false);
+  const id = "bcb8ca89-ce32-4c41-933b-179f0acb36e7";
   const [modality, setModality] = useState<string>("PRESENCIAL");
 
-  const { control, handleSubmit, reset } = useForm<createAppointmentType>({
-    defaultValues: {
-      date: "",
-      hour: "",
-      notes: "",
-      patient: "",
-    },
-    resolver: zodResolver(createAppointmentSchema),
-  });
+  const { control, handleSubmit, reset, watch } =
+    useForm<createAppointmentType>({
+      defaultValues: {
+        date: "",
+        hour: "",
+        notes: "",
+        patient: "",
+      },
+      resolver: zodResolver(createAppointmentSchema),
+    });
+
+  const selectedDate = watch("date");
+
+  // Hooks
+  const { data: patients, isLoading } = useGetAllPatients();
+  const { data: availability, isLoading: availabilityLoading } =
+    useGetTherapistAvailabilityDate(id, { date: selectedDate });
+  const { mutateAsync: appointmentMutate, isPending } = useCreateAppointment();
 
   const onSubmit = async (data: createAppointmentType) => {
-    setSaving(true);
-    console.log(data);
-    setTimeout(() => {
-      setSaving(false);
-      reset({ date: "", hour: "", notes: "", patient: "" });
-    }, 2000);
+    try {
+      const [startAt, endAt] = data.hour.split(" - ");
+      await appointmentMutate(
+        {
+          therapistId: id,
+          modality: modality,
+          patientId: data.patient,
+          startAt: startAt,
+          endAt: endAt,
+          date: selectedDate,
+        },
+        {
+          onSuccess: () => {
+            reset({
+              date: "",
+              hour: "",
+              notes: "",
+              patient: "",
+            });
+          },
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
   };
 
-  useEffect(() => {
-    const fetchPatients = async () => {
-      setTimeout(() => {
-        setPatients([
-          {
-            id: "1",
-            name: "Leonardo Costa",
-            birth_date: "03/25/2019",
-            relationship: "Filho",
-            responsible: {
-              id: "112211",
-              name: "Guilherme Costa",
-              email: "guilhermecosta@gmail.com",
-              phone: "81996839028",
-            },
-            therapist: { id: "44584", name: "Betriz Praxedes" },
-            created_at: "26/10/2026",
-          },
-          {
-            id: "2",
-            name: "Eduardo Costa",
-            birth_date: "09/02/2022",
-            relationship: "Filho",
-            responsible: {
-              id: "112211",
-              name: "Guilherme Costa",
-              email: "guilhermecosta@gmail.com",
-              phone: "81996839028",
-            },
-            therapist: { id: "44584", name: "Betriz Praxedes" },
-            created_at: "26/10/2026",
-          },
-        ]);
-
-        setLoading(false);
-      }, 2000);
-    };
-
-    fetchPatients();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <div>
         <Header>
@@ -125,10 +113,10 @@ export default function TherapistSchedule() {
         <p>Escolha o paciente, data e modalidade de atendimento</p>
       </Header>
 
-      {patients.length === 0 ? (
+      {patients?.length === 0 ? (
         <EmptyNote>
-          Você precisa cadastrar pelo menos um paciente antes de agendar uma
-          consulta. Vá em "Pacientes" para adicionar.
+          Você precisa ter pelo menos um paciente vinculado a você para marcar
+          uma consulta.
         </EmptyNote>
       ) : (
         <Form onSubmit={handleSubmit(onSubmit)}>
@@ -141,7 +129,7 @@ export default function TherapistSchedule() {
                 <>
                   <Select errors={!!fieldState.error} {...field}>
                     <option value="">Selecione o paciente...</option>
-                    {patients.map((p) => (
+                    {patients?.map((p) => (
                       <option key={p.id} value={p.id}>
                         {p.name}
                       </option>
@@ -183,11 +171,18 @@ export default function TherapistSchedule() {
                 control={control}
                 render={({ field, fieldState }) => (
                   <>
-                    <Input
-                      errors={!!fieldState.error?.message}
-                      type="time"
+                    <Select
+                      errors={!!fieldState.error}
                       {...field}
-                    />
+                      disabled={availabilityLoading}
+                    >
+                      <option value="">Selecione o horário...</option>
+                      {availability?.slots.map((a, i) => (
+                        <option key={i} value={`${a.startTime} - ${a.endTime}`}>
+                          {a.startTime} - {a.endTime}
+                        </option>
+                      ))}
+                    </Select>
                     {fieldState.error && (
                       <FormHelperText sx={{ color: theme.colors.error }}>
                         {fieldState.error.message}
@@ -241,10 +236,10 @@ export default function TherapistSchedule() {
             />
           </FieldGroup>
 
-          <SubmitBtn type="submit" disabled={saving}>
-            {!saving && <CalendarClock size={20} />}
+          <SubmitBtn type="submit" disabled={isPending}>
+            {!isPending && <CalendarClock size={20} />}
 
-            {saving ? (
+            {isPending ? (
               <CircularProgress sx={{ color: theme.colors.accent }} size={20} />
             ) : (
               "Confirmar Agendamento"

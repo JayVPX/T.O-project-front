@@ -10,8 +10,18 @@ export const queryClient = new QueryClient({
 });
 
 export const queryKeys = {
+  // Patients
   allPatients: "patients",
   getOnePatient: "onePatient",
   therapistPatients: "therapistPatients",
   userPatients: "userPatients",
+
+  // Appointments
+  responsibleAppointments: "responsibleAppointments",
+  allAppointments: "allAppointments",
+  patientAppointments: "patientAppointments",
+  therapistAppointments: "therapistAppointments",
+
+  // Availability
+  therapistAvailability: "therapistAvailabilityDate",
 };

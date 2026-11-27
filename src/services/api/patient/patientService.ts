@@ -7,7 +7,10 @@ import { privateApi } from "../../http/httpClient";
 export const patientService = {
   //Criar paciente
   async createPatient(payload: CreatePatientDTO): Promise<PatientDTO> {
-    const { data } = await privateApi.post<PatientDTO>(`patient`, payload);
+    const { data } = await privateApi.post<PatientDTO>(
+      `patients/create`,
+      payload,
+    );
 
     return data;
   },
@@ -22,7 +25,7 @@ export const patientService = {
   //Consulta os pacientes de um usuário
   async getUserPatients(userId: string): Promise<PatientDTO[]> {
     const { data } = await privateApi.get<PatientDTO[]>(
-      `patient/user/${userId}}`,
+      `patients/user/${userId}`,
     );
     return data;
   },
@@ -30,7 +33,7 @@ export const patientService = {
   //Consulta os pacientes de um terapeuta
   async getTherapistPatients(therapistId: string): Promise<PatientDTO[]> {
     const { data } = await privateApi.get<PatientDTO[]>(
-      `patient/therapist/${therapistId}}`,
+      `patients/therapist/${therapistId}`,
     );
     return data;
   },
@@ -44,7 +47,7 @@ export const patientService = {
 
   //   Deleta paciente
   async deletePatient(patientId: string): Promise<PatientDTO> {
-    const { data } = await privateApi.delete(`patient/${patientId}`);
+    const { data } = await privateApi.delete(`patients/${patientId}`);
     return data;
   },
 };

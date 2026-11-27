@@ -14,6 +14,7 @@ interface Props {
 
 export default function EvolutionDocument({ body, patient }: Props) {
   const [logoBase64, setLogoBase64] = useState("");
+  const therapistName = "Beatriz Praxedes";
 
   useEffect(() => {
     getImageBase64(logo).then(setLogoBase64);
@@ -82,7 +83,7 @@ export default function EvolutionDocument({ body, patient }: Props) {
 
             <Text style={styles.informationText}>
               <Text style={styles.boldText}>Terapeuta: </Text>
-              {patient.therapist.name}
+              {therapistName}
             </Text>
           </View>
         </View>

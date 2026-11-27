@@ -8,52 +8,26 @@ import {
   List,
   LoadingState,
 } from "./styled";
-import { useEffect, useState } from "react";
-import { type AppointmentDTO } from "../../../model/appointment/appointmentDto";
+import { useState } from "react";
+
 import { CircularProgress } from "@mui/material";
 import { useTheme } from "styled-components";
 import AppointmentCard from "../../../components/appointmentCard";
+import { useGetResponsibleAppointments } from "../../../hooks/appointments/useGetResponsibleAppointments";
+import { useAuth } from "../../../providers/auth/useAuth";
 
 export default function UserAppointmentsHistory() {
   const theme = useTheme();
-  const [appointments, setAppointments] = useState<AppointmentDTO[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const { user } = useAuth();
+  const id = user?.id;
+
   const [filter, setFilter] = useState<
     "all" | "Agendada" | "Concluída" | "Cancelada"
   >("all");
 
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      setTimeout(() => {
-        setAppointments([
-          {
-            id: "1",
-            modality: "PRESENCIAL",
-            patient: { id: "1", name: "Leonardo Costa" },
-            responsible: { id: "1", name: "Guilherme Costa" },
-            status: "SCHEDULED",
-            scheduleAt: "2026-11-30T20:00:00",
-            therapist: { id: "12", name: "Beatriz Praxedes" },
-            notes: "A criança tem sensibilidade auditiva",
-          },
-          {
-            id: "2",
-            modality: "ONLINE",
-            patient: { id: "1", name: "Eduardo Costa" },
-            responsible: { id: "1", name: "Guilherme Costa" },
-            status: "SCHEDULED",
-            scheduleAt: "2026-12-05T08:30:00",
-            therapist: { id: "12", name: "Beatriz Praxedes" },
-            notes: "Hiperfoco em cor azul",
-          },
-        ]);
-
-        setLoading(false);
-      }, 2000);
-    };
-
-    fetchAppointments();
-  }, []);
+  const { data: appointments, isLoading } = useGetResponsibleAppointments(
+    id ?? "",
+  );
 
   const cancelAppointment = (id: string) => {
     console.log(`Consulta do ID ${id} foi cancelada`);
@@ -82,7 +56,7 @@ export default function UserAppointmentsHistory() {
         </FilterSelect>
       </FilterBar>
 
-      {loading ? (
+      {isLoading ? (
         <LoadingState>
           <CircularProgress
             size={48}
@@ -99,7 +73,7 @@ export default function UserAppointmentsHistory() {
             Carregando consultas...
           </p>
         </LoadingState>
-      ) : appointments.length === 0 ? (
+      ) : appointments?.length === 0 ? (
         <EmptyState>
           <History size={56} />
           <h3>Nenhuma consulta encontrada</h3>
@@ -107,7 +81,7 @@ export default function UserAppointmentsHistory() {
         </EmptyState>
       ) : (
         <List>
-          {appointments.map((a) => (
+          {appointments?.map((a) => (
             <AppointmentCard
               key={a.id}
               appointment={a}

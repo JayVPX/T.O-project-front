@@ -24,39 +24,82 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { FormHelperText } from "@mui/material";
 import { useTheme } from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { useRegister } from "../../hooks/auth/useRegister";
+import { useLogin } from "../../hooks/auth/useLogin";
+import { applyCpfMask } from "../../utils/cpfMask";
 
 export default function Login() {
   const [isActive, setIsActive] = useState(false);
   const theme = useTheme();
   const navigate = useNavigate();
+
   // Formulário de cadastro
-  const { control: registerControl, handleSubmit: handleSignupSubmit } =
-    useForm<registerType>({
-      resolver: zodResolver(registerSchema),
-      defaultValues: {
-        celular: "",
-        email: "",
-        nome: "",
-        senha: "",
-        sobrenome: "",
-      },
-    });
+  const {
+    control: registerControl,
+    handleSubmit: handleSignupSubmit,
+    reset,
+  } = useForm<registerType>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      password: "",
+      email: "",
+      firstName: "",
+      lastName: "",
+      phone: "",
+      cpf: "",
+    },
+  });
+
+  // Hooks
+  const { mutateAsync: registerMutate } = useRegister();
+  const { mutateAsync: loginMutate } = useLogin();
 
   // Formulário de login
   const { control: loginControl, handleSubmit: handleSigninSubmit } =
     useForm<loginType>({
       resolver: zodResolver(loginSchema),
-      defaultValues: { email: "", senha: "" },
+      defaultValues: { email: "", password: "" },
     });
 
-  const onRegister = (data: registerType) => {
-    console.log("Dados do cadastro:", data);
-    navigate("/therapist");
+  const onRegister = async (data: registerType) => {
+    const response = await registerMutate(
+      {
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        phone: data.phone.replace(/\D/g, ""),
+        cpf: data.cpf.replace(/\D/g, ""),
+        password: data.password,
+      },
+      {
+        onSuccess: () => {
+          reset({
+            password: "",
+            email: "",
+            firstName: "",
+            lastName: "",
+            phone: "",
+          });
+          setIsActive(false);
+        },
+      },
+    );
+
+    console.log(response);
   };
 
   const onLogin = (data: loginType) => {
-    console.log("Dados do login:", data);
-    navigate("/therapist");
+    loginMutate(
+      {
+        email: data.email,
+        password: data.password,
+      },
+      {
+        onSuccess: () => {
+          navigate("/user");
+        },
+      },
+    );
   };
 
   return (
@@ -67,7 +110,7 @@ export default function Login() {
           <Title>Crie uma conta</Title>
 
           <Controller
-            name="nome"
+            name="firstName"
             control={registerControl}
             render={({ field, fieldState }) => (
               <div style={{ width: "100%" }}>
@@ -89,7 +132,7 @@ export default function Login() {
           />
 
           <Controller
-            name="sobrenome"
+            name="lastName"
             control={registerControl}
             render={({ field, fieldState }) => (
               <div style={{ width: "100%" }}>
@@ -111,7 +154,7 @@ export default function Login() {
           />
 
           <Controller
-            name="celular"
+            name="phone"
             control={registerControl}
             render={({ field, fieldState }) => (
               <div style={{ width: "100%" }}>
@@ -119,8 +162,10 @@ export default function Login() {
                   type="tel"
                   placeholder="Celular"
                   errors={!!fieldState.error}
-                  {...field}
-                  onChange={(e) => applyTelMask(e.target.value)}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                    applyTelMask(e.target.value);
+                  }}
                   value={applyTelMask(field.value)}
                 />
                 {fieldState.error && (
@@ -155,9 +200,34 @@ export default function Login() {
               </div>
             )}
           />
+          <Controller
+            name="cpf"
+            control={registerControl}
+            render={({ field, fieldState }) => (
+              <div style={{ width: "100%" }}>
+                <Input
+                  type="tel"
+                  placeholder="CPF"
+                  errors={!!fieldState.error}
+                  {...field}
+                  onChange={(e) => {
+                    field.onChange(e.target.value);
+                  }}
+                  value={applyCpfMask(field.value ?? "")}
+                />
+                {fieldState.error && (
+                  <FormHelperText
+                    sx={{ color: theme.colors.error, textAlign: "left" }}
+                  >
+                    {fieldState.error.message}
+                  </FormHelperText>
+                )}
+              </div>
+            )}
+          />
 
           <Controller
-            name="senha"
+            name="password"
             control={registerControl}
             render={({ field, fieldState }) => (
               <div style={{ width: "100%" }}>
@@ -210,7 +280,7 @@ export default function Login() {
           />
 
           <Controller
-            name="senha"
+            name="password"
             control={loginControl}
             render={({ field, fieldState }) => (
               <div style={{ width: "100%" }}>

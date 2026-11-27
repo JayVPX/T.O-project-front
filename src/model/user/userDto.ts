@@ -1,15 +1,20 @@
-export interface CreateUserDto {
+export interface UserModelDto {
+  id: string;
   name: string;
   email: string;
   phone: string;
   cpf: string;
+  role: UserRole;
+  address?: string | undefined;
+}
+
+export interface CreateUserModelDto {
+  firstName: string;
+  lastName: string;
+  email: string;
+  cpf: string;
+  phone: string;
   password: string;
 }
 
-export interface UserDto {
-  name: string;
-  email: string;
-  phone: string;
-  cpf: string;
-  accessToken: string;
-}
+export type UserRole = "THERAPIST" | "SA" | "USER";

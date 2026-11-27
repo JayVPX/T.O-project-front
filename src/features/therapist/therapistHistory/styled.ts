@@ -22,25 +22,21 @@ const List = styled.div`
 `;
 
 const EmptyState = styled.div`
-  max-width: 900px;
   text-align: center;
   padding: ${({ theme }) => theme.spacing.xxl};
   color: ${({ theme }) => theme.colors.textSecondary};
-  background: ${({ theme }) => theme.colors.surface};
-  border: 1px dashed ${({ theme }) => theme.colors.border};
-  border-radius: ${({ theme }) => theme.radius.md};
   svg {
-    opacity: 0.35;
+    opacity: 0.3;
     margin-bottom: ${({ theme }) => theme.spacing.md};
   }
   h3 {
     color: ${({ theme }) => theme.colors.text};
-    font-size: 1.05rem;
-    margin: 0 0 6px;
+    font-size: 1.1rem;
+    margin: 0 0 ${({ theme }) => theme.spacing.sm};
   }
   p {
     margin: 0;
-    font-size: 0.88rem;
+    font-size: 0.9rem;
   }
 `;
 

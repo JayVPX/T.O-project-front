@@ -28,8 +28,11 @@ import {
 } from "./styled";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useAuth } from "../../providers/auth/useAuth";
 
 export default function UserDashboard() {
+  const { user } = useAuth();
+
   const location = useLocation();
   const navigate = useNavigate();
   const titles: Record<string, string> = {
@@ -113,7 +116,7 @@ export default function UserDashboard() {
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </MenuBtn>
           <TopbarTitle>{title}</TopbarTitle>
-          <UserEmail>{"joao@gmail.com"}</UserEmail>
+          <UserEmail>{user?.email}</UserEmail>
         </Topbar>
 
         <Content>

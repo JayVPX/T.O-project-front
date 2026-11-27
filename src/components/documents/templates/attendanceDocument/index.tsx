@@ -15,7 +15,7 @@ interface Props {
 export default function AttendanceDocument({ body, patient }: Props) {
   const [logoBase64, setLogoBase64] = useState("");
   const emissionDate = new Date();
-
+  const therapistName = "Beatriz Praxedes";
   const day = emissionDate.getDate();
   const month = emissionDate.getMonth();
   const year = emissionDate.getFullYear();
@@ -145,7 +145,7 @@ export default function AttendanceDocument({ body, patient }: Props) {
           <View style={styles.signatureLine} />
 
           <Text style={styles.signatureName}>
-            {patient.therapist.name}, Terapeuta Ocupacional
+            {therapistName}, Terapeuta Ocupacional
           </Text>
 
           <Text style={styles.signatureRegistration}>CREFITO: 19376 TO</Text>

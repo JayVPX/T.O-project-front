@@ -1,5 +1,5 @@
 import { FileCheck2, FileText, LockKeyhole } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import {
   Header,
@@ -15,9 +15,8 @@ import {
   PreviewRows,
   PreviewTitle,
   DownloadButtonContainer,
+  LoadingState,
 } from "./styled";
-
-import type { PatientDTO } from "../../../model/patient/patientDto";
 
 import type {
   AttendanceBodyProps,
@@ -31,9 +30,15 @@ import DocumentGenerator from "../../../components/documents/generator";
 import AttendanceForm from "../../../components/documents/forms/attendance";
 import EvolutionForm from "../../../components/documents/forms/evolution";
 import SchoolVisitForm from "../../../components/documents/forms/schoolVisit";
+import { useGetTherapistPatients } from "../../../hooks/patients/useGetTherapistPatients";
+import { CircularProgress } from "@mui/material";
+import { useTheme } from "styled-components";
 
 export default function TherapistDocuments() {
-  const [patients, setPatients] = useState<PatientDTO[]>([]);
+  const id = "bcb8ca89-ce32-4c41-933b-179f0acb36e7";
+  const therapistName = "Beatriz Praxedes";
+  const theme = useTheme();
+  const { data: patients, isLoading } = useGetTherapistPatients(id);
 
   const [documentType, setDocumentType] = useState<DocumentType>("anamnese");
 
@@ -49,50 +54,7 @@ export default function TherapistDocuments() {
     anamnese: "Anamnese Infantil",
   };
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setPatients([
-        {
-          id: "1",
-          name: "Leonardo Costa",
-          birth_date: "03/25/2019",
-          relationship: "Filho",
-          responsible: {
-            id: "112211",
-            name: "Guilherme Costa",
-            email: "guilhermecosta@gmail.com",
-            phone: "81998877665",
-          },
-          therapist: {
-            id: "44584",
-            name: "Beatriz Praxedes",
-          },
-          created_at: "26/10/2026",
-        },
-        {
-          id: "2",
-          name: "Eduardo Costa",
-          birth_date: "09/02/2022",
-          relationship: "Filho",
-          responsible: {
-            id: "112211",
-            name: "Guilherme Costa",
-            email: "guilhermecosta@gmail.com",
-            phone: "81998877665",
-          },
-          therapist: {
-            id: "44584",
-            name: "Beatriz Praxedes",
-          },
-          created_at: "26/10/2026",
-        },
-      ]);
-    }, 1000);
-
-    return () => clearTimeout(timeout);
-  }, []);
-
-  const patient = patients.find((item) => item.id === patientId);
+  const patient = patients?.find((item) => item.id === patientId);
 
   function handleDocumentTypeChange(value: DocumentType) {
     setDocumentType(value);
@@ -113,7 +75,7 @@ export default function TherapistDocuments() {
   function handlePatientChange(value: string) {
     setPatientId(value);
 
-    const selectedPatient = patients.find((item) => item.id === value);
+    const selectedPatient = patients?.find((item) => item.id === value);
 
     if (documentType === "anamnese" && selectedPatient) {
       setDocumentData({
@@ -187,108 +149,124 @@ export default function TherapistDocuments() {
         <h2>Documentos</h2>
         <p>Escolha um modelo e o paciente para preparar um novo documento.</p>
       </Header>
+      {isLoading ? (
+        <LoadingState>
+          <CircularProgress
+            size={48}
+            sx={{ color: theme.colors.textSecondary }}
+          />
+          <p
+            style={{
+              color: theme.colors.textSecondary,
+              textAlign: "center",
+              margin: "12px 0 0",
+              fontSize: "14px",
+            }}
+          >
+            Carregando seu cronograma...
+          </p>
+        </LoadingState>
+      ) : (
+        <Panel>
+          <Intro>
+            <FileText size={24} />
 
-      <Panel>
-        <Intro>
-          <FileText size={24} />
+            <div>
+              <h3>Gerador de documentos</h3>
+              <p>
+                Selecione as informações que deverão constar no documento.
+                Preencha os campos necessários para gerar o PDF.
+              </p>
+            </div>
+          </Intro>
 
-          <div>
-            <h3>Gerador de documentos</h3>
-            <p>
-              Selecione as informações que deverão constar no documento.
-              Preencha os campos necessários para gerar o PDF.
-            </p>
-          </div>
-        </Intro>
+          {/* Seleções iniciais */}
+          <Form>
+            <Field>
+              <span>Tipo de documento</span>
 
-        {/* Seleções iniciais */}
-        <Form>
-          <Field>
-            <span>Tipo de documento</span>
+              <Select
+                value={documentType}
+                onChange={(event) =>
+                  handleDocumentTypeChange(event.target.value as DocumentType)
+                }
+              >
+                <option value="anamnese">Anamnese infantil</option>
+                <option value="evolucao">Evolução diária</option>
+                <option value="atendimento">Registro de atendimento</option>
+                <option value="visita">Relatório de visita escolar</option>
+              </Select>
 
-            <Select
-              value={documentType}
-              onChange={(event) =>
-                handleDocumentTypeChange(event.target.value as DocumentType)
-              }
-            >
-              <option value="anamnese">Anamnese infantil</option>
-              <option value="evolucao">Evolução diária</option>
-              <option value="atendimento">Registro de atendimento</option>
-              <option value="visita">Relatório de visita escolar</option>
-            </Select>
+              <SelectIcon size={17} />
+            </Field>
 
-            <SelectIcon size={17} />
-          </Field>
+            <Field>
+              <span>Paciente</span>
 
-          <Field>
-            <span>Paciente</span>
+              <Select
+                value={patientId}
+                onChange={(event) => handlePatientChange(event.target.value)}
+              >
+                <option value="">Selecione o paciente...</option>
 
-            <Select
-              value={patientId}
-              onChange={(event) => handlePatientChange(event.target.value)}
-            >
-              <option value="">Selecione o paciente...</option>
+                {patients?.map((item) => (
+                  <option key={item.id} value={item.id}>
+                    {item.name}
+                  </option>
+                ))}
+              </Select>
 
-              {patients.map((item) => (
-                <option key={item.id} value={item.id}>
-                  {item.name}
-                </option>
-              ))}
-            </Select>
+              <SelectIcon size={17} />
+            </Field>
+          </Form>
 
-            <SelectIcon size={17} />
-          </Field>
-        </Form>
+          {/* Prévia das informações selecionadas */}
+          {documentType && (
+            <Preview>
+              <PreviewTitle>
+                <FileCheck2 size={18} />
+                Prévia das informações selecionadas
+              </PreviewTitle>
 
-        {/* Prévia das informações selecionadas */}
-        {documentType && (
-          <Preview>
-            <PreviewTitle>
-              <FileCheck2 size={18} />
-              Prévia das informações selecionadas
-            </PreviewTitle>
+              <PreviewRows>
+                <PreviewRow>
+                  Documento
+                  <strong>{documentNames[documentType]}</strong>
+                </PreviewRow>
 
-            <PreviewRows>
-              <PreviewRow>
-                Documento
-                <strong>{documentNames[documentType]}</strong>
-              </PreviewRow>
+                <PreviewRow>
+                  Paciente
+                  <strong>{patient?.name || "Aguardando seleção"}</strong>
+                </PreviewRow>
 
-              <PreviewRow>
-                Paciente
-                <strong>{patient?.name || "Aguardando seleção"}</strong>
-              </PreviewRow>
+                <PreviewRow>
+                  Terapeuta
+                  <strong>{therapistName || "Dados da conta atual"}</strong>
+                </PreviewRow>
 
-              <PreviewRow>
-                Terapeuta
-                <strong>
-                  {patient?.therapist.name || "Dados da conta atual"}
-                </strong>
-              </PreviewRow>
+                <PreviewRow>
+                  Formato
+                  <strong>PDF</strong>
+                </PreviewRow>
+              </PreviewRows>
+              {documentType && patient && renderDocumentForm()}
+            </Preview>
+          )}
 
-              <PreviewRow>
-                Formato
-                <strong>PDF</strong>
-              </PreviewRow>
-            </PreviewRows>
-            {documentType && patient && renderDocumentForm()}
-          </Preview>
-        )}
+          {/* Gerador do PDF após o envio do formulário */}
+          {documentData !== null && patient && (
+            <DownloadButtonContainer>
+              <DocumentGenerator {...documentData} />
+            </DownloadButtonContainer>
+          )}
 
-        {/* Gerador do PDF após o envio do formulário */}
-        {documentData !== null && patient && (
-          <DownloadButtonContainer>
-            <DocumentGenerator {...documentData} />
-          </DownloadButtonContainer>
-        )}
-
-        <FooterNote>
-          <LockKeyhole size={15} />
-          Os dados do documento ficam disponíveis apenas para o atendimento
-          selecionado.
-        </FooterNote>
-      </Panel>
+          <FooterNote>
+            <LockKeyhole size={15} />
+            Os dados do documento ficam disponíveis apenas para o atendimento
+            selecionado.
+          </FooterNote>
+        </Panel>
+      )}
     </div>
   );
 }

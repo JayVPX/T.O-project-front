@@ -140,6 +140,92 @@ const MenuToggle = styled.button`
   }
 `;
 
+const AccountWrap = styled.div`
+  position: relative;
+`;
+
+const AccountButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: ${({ theme }) => theme.colors.primary};
+  color: ${({ theme }) => theme.colors.surface};
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: ${({ theme }) => theme.colors.primaryDark};
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(53, 92, 80, 0.25);
+  }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: auto;
+    border-radius: ${({ theme }) => theme.radius.sm};
+    padding: ${({ theme }) => theme.spacing.md};
+  }
+`;
+
+const AccountDropdown = styled.div`
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 140px;
+  padding: ${({ theme }) => theme.spacing.xs};
+  background: ${({ theme }) => theme.colors.surface};
+  border: 1px solid ${({ theme }) => theme.colors.border};
+  border-radius: ${({ theme }) => theme.radius.md};
+  box-shadow: 0 10px 28px rgba(41, 51, 47, 0.14);
+  z-index: 110;
+
+  @media (max-width: 768px) {
+    position: static;
+    width: 100%;
+    margin-top: ${({ theme }) => theme.spacing.sm};
+    box-shadow: none;
+  }
+`;
+
+const AccountOption = styled.a`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radius.sm};
+  color: ${({ theme }) => theme.colors.textSecondary};
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  cursor: pointer;
+
+  &:hover {
+    color: ${({ theme }) => theme.colors.primaryDark};
+    background: ${({ theme }) => theme.colors.accent};
+  }
+`;
+
+const AccountLogout = styled.button`
+  display: flex;
+  align-items: center;
+  gap: ${({ theme }) => theme.spacing.sm};
+  width: 100%;
+  padding: ${({ theme }) => theme.spacing.sm} ${({ theme }) => theme.spacing.md};
+  border-radius: ${({ theme }) => theme.radius.sm};
+  color: #dc2626;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: #fef2f2;
+  }
+`;
+
 export {
   LoginButton,
   Logo,
@@ -149,4 +235,9 @@ export {
   NavContainer,
   NavLinkItem,
   NavLinks,
+  AccountButton,
+  AccountDropdown,
+  AccountLogout,
+  AccountOption,
+  AccountWrap,
 };

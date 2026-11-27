@@ -27,8 +27,10 @@ import {
 } from "./styled";
 import { useState } from "react";
 import { useLocation, useNavigate, Outlet } from "react-router-dom";
+import { useAuth } from "../../providers/auth/useAuth";
 
 export default function TherapistDashboard() {
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const titles: Record<string, string> = {
@@ -112,7 +114,7 @@ export default function TherapistDashboard() {
             {sidebarOpen ? <X size={24} /> : <Menu size={24} />}
           </MenuBtn>
           <TopbarTitle>{title}</TopbarTitle>
-          <UserEmail>{"joao@gmail.com"}</UserEmail>
+          <UserEmail>{user?.email}</UserEmail>
         </Topbar>
 
         <Content>

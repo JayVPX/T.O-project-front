@@ -1,5 +1,8 @@
 import { Trash2, UserCircle, Cake, Calendar } from "lucide-react";
-import type { PatientDTO } from "../../model/patient/patientDto";
+import {
+  RelationshipLabel,
+  type PatientDTO,
+} from "../../model/patient/patientDto";
 import {
   Card,
   CardHeader,
@@ -9,6 +12,7 @@ import {
   PatientName,
 } from "./styled";
 import { calcAge } from "../../utils/calcAge";
+import { formatDateToBr } from "../../utils/formatDateToBr";
 
 interface Props {
   patient: PatientDTO;
@@ -17,6 +21,9 @@ interface Props {
 
 export default function PatientCard({ patient: p, handleDelete }: Props) {
   const age = calcAge(p.birth_date);
+
+  const registerDate = p.created_at.split("T")[0];
+
   return (
     <Card key={p.id}>
       <CardHeader>
@@ -27,7 +34,7 @@ export default function PatientCard({ patient: p, handleDelete }: Props) {
       </CardHeader>
       <InfoRow>
         <UserCircle size={16} />
-        {p.relationship || "Sem parentesco informado"}
+        {RelationshipLabel[p.relationship] || "Sem parentesco informado"}
       </InfoRow>
       {age !== null && (
         <InfoRow>
@@ -37,7 +44,7 @@ export default function PatientCard({ patient: p, handleDelete }: Props) {
       )}
       <InfoRow>
         <Calendar size={16} />
-        Cadastrado em {p.created_at}
+        Cadastrado em {formatDateToBr(registerDate)}
       </InfoRow>
       {p.notes && <Notes>{p.notes}</Notes>}
     </Card>

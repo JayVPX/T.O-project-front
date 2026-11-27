@@ -1,7 +1,7 @@
 import z from "zod";
 
 export const createPatientSchema = z.object({
-  name: z.string().min(15, "Insira o nome completo"),
+  name: z.string().min(10, "Insira o nome completo"),
   birth_date: z
     .string()
     .min(1, "A data de nascimento é obrigatória")

@@ -1,48 +1,14 @@
-import { useEffect, useState } from "react";
-import type { AppointmentDTO } from "../../../model/appointment/appointmentDto";
 import { EmptyState, Header, List, LoadingState } from "./styled";
 import { CalendarDays } from "lucide-react";
 import AppointmentCardTherapist from "../../../components/appointmentCardTherapist";
 import { CircularProgress } from "@mui/material";
 import { useTheme } from "styled-components";
+import { useGetTherapistAppointments } from "../../../hooks/appointments/useGetTherapistAppointments";
 
 export default function TherapistHistory() {
-  const [appointments, setAppointments] = useState<AppointmentDTO[]>([]);
-  const [loading, setLoading] = useState(true);
+  const id = "bcb8ca89-ce32-4c41-933b-179f0acb36e7";
   const theme = useTheme();
-
-  useEffect(() => {
-    const fetchAppointments = async () => {
-      setTimeout(() => {
-        setAppointments([
-          {
-            id: "1",
-            modality: "PRESENCIAL",
-            patient: { id: "1", name: "Leonardo Costa" },
-            responsible: { id: "1", name: "Guilherme Costa" },
-            status: "SCHEDULED",
-            scheduleAt: "2026-11-30T20:00:00",
-            therapist: { id: "12", name: "Beatriz Praxedes" },
-            notes: "A criança tem sensibilidade auditiva",
-          },
-          {
-            id: "2",
-            modality: "ONLINE",
-            patient: { id: "1", name: "Eduardo Costa" },
-            responsible: { id: "1", name: "Guilherme Costa" },
-            status: "SCHEDULED",
-            scheduleAt: "2026-12-05T08:30:00",
-            therapist: { id: "12", name: "Beatriz Praxedes" },
-            notes: "Hiperfoco em cor azul",
-          },
-        ]);
-
-        setLoading(false);
-      }, 1500);
-    };
-
-    fetchAppointments();
-  }, []);
+  const { data: appointments, isLoading } = useGetTherapistAppointments(id);
 
   const handleChange = (id: string, status: string) => {
     console.log(`O status da consulta ${id} foi alterada para ${status}`);
@@ -57,7 +23,7 @@ export default function TherapistHistory() {
           atendimento.
         </p>
       </Header>
-      {loading ? (
+      {isLoading ? (
         <LoadingState>
           <CircularProgress
             size={48}
@@ -74,7 +40,7 @@ export default function TherapistHistory() {
             Carregando seu cronograma...
           </p>
         </LoadingState>
-      ) : appointments.length === 0 ? (
+      ) : appointments?.length === 0 ? (
         <EmptyState>
           <CalendarDays size={54} />
           <h3>Nenhuma consulta próxima</h3>
@@ -82,7 +48,7 @@ export default function TherapistHistory() {
         </EmptyState>
       ) : (
         <List>
-          {appointments.map((appointment) => (
+          {appointments?.map((appointment) => (
             <AppointmentCardTherapist
               appointment={appointment}
               handleStatusChange={handleChange}

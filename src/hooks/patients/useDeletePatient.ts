@@ -11,6 +11,7 @@ export function useDeletePatient() {
 
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [queryKeys.userPatients] });
+      queryClient.invalidateQueries({ queryKey: [queryKeys.allPatients] });
     },
   });
 }

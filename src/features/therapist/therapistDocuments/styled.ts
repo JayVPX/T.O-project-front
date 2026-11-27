@@ -153,6 +153,10 @@ const DownloadButtonContainer = styled.div`
   align-items: center;
   justify-content: center;
 `;
+const LoadingState = styled.div`
+  text-align: center;
+  padding: ${({ theme }) => theme.spacing.xxl};
+`;
 
 export {
   Field,
@@ -168,4 +172,5 @@ export {
   Select,
   SelectIcon,
   DownloadButtonContainer,
+  LoadingState,
 };

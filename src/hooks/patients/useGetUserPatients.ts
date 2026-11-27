@@ -9,5 +9,6 @@ export function useGetUserPatients(id: string) {
       const data = await patientService.getUserPatients(id);
       return data;
     },
+    enabled: Boolean(id),
   });
 }
